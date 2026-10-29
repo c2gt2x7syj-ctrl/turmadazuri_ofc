@@ -840,12 +840,12 @@ const esconde = {
   fundo: document.getElementById('esconde-fundo'), frente: document.getElementById('esconde-frente'), bolota: document.getElementById('esconde-bolota'),
   fuxico: document.getElementById('esconde-fuxico'), retorno: document.getElementById('esconde-retorno'),
   pontosEl: document.getElementById('esconde-pontos'), cenaEl: document.getElementById('esconde-cena'),
-  novo: document.getElementById('esconde-novo'), pontos: 0, cena: -1, travado: false,
+  novo: document.getElementById('esconde-novo'), pontos: 0, cena: -1, travado: false, dicaTimer: null,
 };
 const CENAS_ESCONDE = [
-  { src: 'img/jogos/onde-bolota/quintal.jpg', frente: 'img/jogos/onde-bolota/quintal-frente.png', alt: 'Quintal colorido da Turma da Zuri', posicoes: [[0, 48, .72], [10, 58, .68], [22, 61, .7], [70, 58, .66], [84, 48, .7], [3, 25, .64], [80, 25, .66]] },
-  { src: 'img/jogos/onde-bolota/floresta.jpg', frente: 'img/jogos/onde-bolota/floresta-frente.png', alt: 'Clareira verde da Mata Atlântica', posicoes: [[0, 48, .66], [11, 58, .7], [24, 63, .64], [70, 61, .68], [84, 46, .66], [2, 27, .62], [80, 27, .64]] },
-  { src: 'img/jogos/onde-bolota/praia.jpg', frente: 'img/jogos/onde-bolota/praia-frente.png', alt: 'Praia e manguezal ensolarados', posicoes: [[0, 48, .68], [11, 59, .64], [25, 63, .68], [69, 61, .64], [84, 46, .68], [2, 26, .62], [80, 25, .64]] },
+  { src: 'img/jogos/onde-bolota/quintal.jpg', frente: 'img/jogos/onde-bolota/quintal-frente.png', alt: 'Quintal colorido da Turma da Zuri', posicoes: [[1, 43, .84], [12, 52, .8], [24, 54, .82], [68, 52, .78], [82, 43, .82], [4, 23, .76], [78, 23, .78]] },
+  { src: 'img/jogos/onde-bolota/floresta.jpg', frente: 'img/jogos/onde-bolota/floresta-frente.png', alt: 'Clareira verde da Mata Atlântica', posicoes: [[1, 43, .8], [13, 52, .84], [26, 55, .78], [68, 54, .82], [82, 42, .8], [4, 25, .76], [78, 25, .78]] },
+  { src: 'img/jogos/onde-bolota/praia.jpg', frente: 'img/jogos/onde-bolota/praia-frente.png', alt: 'Praia e manguezal ensolarados', posicoes: [[1, 43, .82], [13, 53, .78], [27, 56, .82], [67, 54, .78], [82, 42, .82], [4, 24, .76], [78, 23, .78]] },
 ];
 function posicionarEscondido(el, pos, giro, dificuldade) {
   el.style.left = `${pos[0]}%`; el.style.top = `${pos[1]}%`; el.style.setProperty('--giro', `${giro}deg`);
@@ -861,16 +861,17 @@ function somTonhonhoin() {
   osc.connect(ganho).connect(esconde.audio.destination); osc.start(agora); osc.stop(agora + .5);
 }
 function novaCenaEsconde() {
-  const e = esconde; e.travado = false; e.cena = (e.cena + 1) % CENAS_ESCONDE.length;
+  const e = esconde; clearTimeout(e.dicaTimer); e.travado = false; e.cena = (e.cena + 1) % CENAS_ESCONDE.length;
   const cena = CENAS_ESCONDE[e.cena]; e.fundo.src = cena.src; e.fundo.alt = cena.alt; e.frente.src = cena.frente; e.cenaEl.textContent = e.cena + 1;
-  const lugares = embaralhar([...cena.posicoes]); const dificuldade = Math.max(.78, 1 - e.pontos * .025);
+  const lugares = embaralhar([...cena.posicoes]); const dificuldade = Math.max(.9, 1 - e.pontos * .012);
   posicionarEscondido(e.bolota, lugares[0], sorteio(-12, 12), dificuldade); posicionarEscondido(e.fuxico, lugares[1], sorteio(-12, 12), dificuldade);
-  e.bolota.classList.remove('achou'); e.fuxico.classList.remove('pegadinha'); e.bolota.disabled = false; e.fuxico.disabled = false;
+  e.bolota.classList.remove('achou', 'dica-visual'); e.fuxico.classList.remove('pegadinha'); e.bolota.disabled = false; e.fuxico.disabled = false;
   e.retorno.textContent = 'Onde será que o Bolota se escondeu?'; e.retorno.className = 'retorno';
+  e.dicaTimer = setTimeout(() => { if (!e.travado) { e.bolota.classList.add('dica-visual'); e.retorno.textContent = 'Dica: procure atrás das folhas e das pedras!'; } }, 5500);
 }
 if (esconde.bolota) {
   esconde.bolota.addEventListener('click', () => {
-    if (esconde.travado) return; esconde.travado = true; esconde.bolota.disabled = true; esconde.fuxico.disabled = true;
+    if (esconde.travado) return; clearTimeout(esconde.dicaTimer); esconde.travado = true; esconde.bolota.disabled = true; esconde.fuxico.disabled = true;
     esconde.pontos += 1; esconde.pontosEl.textContent = esconde.pontos; esconde.bolota.classList.add('achou');
     esconde.retorno.textContent = 'Achou o Bolota! Muito bem!'; esconde.retorno.className = 'retorno retorno--certo'; efeitos.acertou(esconde.bolota); dizer('bolota/apresenta');
     setTimeout(novaCenaEsconde, 1100);
