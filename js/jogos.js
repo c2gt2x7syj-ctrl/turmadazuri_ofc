@@ -863,11 +863,11 @@ function somTonhonhoin() {
 function novaCenaEsconde() {
   const e = esconde; clearTimeout(e.dicaTimer); e.travado = false; e.cena = (e.cena + 1) % CENAS_ESCONDE.length;
   const cena = CENAS_ESCONDE[e.cena]; e.fundo.src = cena.src; e.fundo.alt = cena.alt; e.frente.src = cena.frente; e.cenaEl.textContent = e.cena + 1;
-  const lugares = embaralhar([...cena.posicoes]); const dificuldade = Math.max(.9, 1 - e.pontos * .012);
+  const lugares = embaralhar([...cena.posicoes]); const dificuldade = Math.max(.86, 1 - e.pontos * .016);
   posicionarEscondido(e.bolota, lugares[0], sorteio(-12, 12), dificuldade); posicionarEscondido(e.fuxico, lugares[1], sorteio(-12, 12), dificuldade);
   e.bolota.classList.remove('achou', 'dica-visual'); e.fuxico.classList.remove('pegadinha'); e.bolota.disabled = false; e.fuxico.disabled = false;
   e.retorno.textContent = 'Onde será que o Bolota se escondeu?'; e.retorno.className = 'retorno';
-  e.dicaTimer = setTimeout(() => { if (!e.travado) { e.bolota.classList.add('dica-visual'); e.retorno.textContent = 'Dica: procure atrás das folhas e das pedras!'; } }, 5500);
+  e.dicaTimer = setTimeout(() => { if (!e.travado) { e.bolota.classList.add('dica-visual'); e.retorno.textContent = 'Dica: procure atrás das folhas e das pedras!'; } }, 7000);
 }
 if (esconde.bolota) {
   esconde.bolota.addEventListener('click', () => {
