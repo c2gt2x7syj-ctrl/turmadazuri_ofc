@@ -846,6 +846,8 @@ const CENAS_ESCONDE = [
   { src: 'img/jogos/onde-bolota/quintal.jpg', frente: 'img/jogos/onde-bolota/quintal-frente.png', alt: 'Quintal colorido da Turma da Zuri', posicoes: [[1, 43, .84], [12, 52, .8], [24, 54, .82], [68, 52, .78], [82, 43, .82], [4, 23, .76], [78, 23, .78]] },
   { src: 'img/jogos/onde-bolota/floresta.jpg', frente: 'img/jogos/onde-bolota/floresta-frente.png', alt: 'Clareira verde da Mata Atlântica', posicoes: [[1, 43, .8], [13, 52, .84], [26, 55, .78], [68, 54, .82], [82, 42, .8], [4, 25, .76], [78, 25, .78]] },
   { src: 'img/jogos/onde-bolota/praia.jpg', frente: 'img/jogos/onde-bolota/praia-frente.png', alt: 'Praia e manguezal ensolarados', posicoes: [[1, 43, .82], [13, 53, .78], [27, 56, .82], [67, 54, .78], [82, 42, .82], [4, 24, .76], [78, 23, .78]] },
+  { src: 'img/jogos/onde-bolota/cerrado.jpg', frente: 'img/jogos/onde-bolota/cerrado-frente.png', alt: 'Caminho florido no Cerrado brasileiro', posicoes: [[1, 43, .8], [13, 53, .78], [27, 56, .82], [67, 54, .78], [82, 42, .8], [4, 24, .76], [78, 24, .78]] },
+  { src: 'img/jogos/onde-bolota/caatinga.jpg', frente: 'img/jogos/onde-bolota/caatinga-frente.png', alt: 'Trilha colorida na Caatinga brasileira', posicoes: [[1, 43, .8], [13, 53, .78], [27, 56, .82], [67, 54, .78], [82, 42, .8], [4, 24, .76], [78, 24, .78]] },
 ];
 function posicionarEscondido(el, pos, giro, dificuldade) {
   el.style.left = `${pos[0]}%`; el.style.top = `${pos[1]}%`; el.style.setProperty('--giro', `${giro}deg`);
