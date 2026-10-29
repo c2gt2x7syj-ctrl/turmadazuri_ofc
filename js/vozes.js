@@ -32,6 +32,14 @@ const FALAS = {
   'zuri/nao-e-esse': 'Não é esse! Olhe bem a forma da sombra.',
   'zuri/missao-cumprida': 'Missão cumprida, bicho feliz!',
 
+  // ---------- Casas e sequência ----------
+  'zuri/casa-tartaruga': 'A tartaruga nasce na areia da praia e vive no mar!',
+  'zuri/casa-tatu': 'O tatu-bola mora na Caatinga e só existe no Brasil!',
+  'zuri/casa-quati': 'O quati vive na Mata Atlântica e adora fuçar o chão!',
+  'zuri/casa-tucano': 'O tucano mora no alto das árvores!',
+  'zuri/seq-sua-vez': 'Sua vez!',
+  'zuri/seq-quase': 'Quase! Vou mostrar de novo.',
+
   // ---------- Cada personagem se apresenta (sombra) ----------
   // Já gravados: recortados das vozes-guia da pasta "Materiais base"
   'zuri/apresenta': 'Oi! Eu sou a Zuri!',

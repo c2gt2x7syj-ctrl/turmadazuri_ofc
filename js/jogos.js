@@ -668,3 +668,208 @@ if (lab.tab) {
   }));
   novoLabirinto();
 }
+
+/* ---------------- 7. Cada bicho na sua casa ---------------- */
+const casas = {
+  bichosEl: document.getElementById('casas-bichos'), destinosEl: document.getElementById('casas-destinos'),
+  retorno: document.getElementById('casas-retorno'), pontosEl: document.getElementById('casas-pontos'),
+  reiniciar: document.getElementById('casas-reiniciar'), selecionado: null, pontos: 0,
+};
+const BICHOS_CASAS = [
+  { id: 'tartaruga', nome: 'Tartaruga', img: 'img/personagens/lua.webp', casa: 'praia', fala: 'zuri/casa-tartaruga' },
+  { id: 'tatu', nome: 'Tatu-bola', img: 'img/personagens/bolota.webp', casa: 'caatinga', fala: 'zuri/casa-tatu' },
+  { id: 'quati', nome: 'Quati', img: 'img/personagens/fuxico.webp', casa: 'mata', fala: 'zuri/casa-quati' },
+  { id: 'tucano', nome: 'Tucano', img: 'img/personagens/tucano.webp', casa: 'copa', fala: 'zuri/casa-tucano' },
+];
+const DESTINOS_CASAS = [
+  { id: 'praia', nome: 'Praia e mar', emoji: '🌊' }, { id: 'caatinga', nome: 'Caatinga', emoji: '🌵' },
+  { id: 'mata', nome: 'Mata Atlântica', emoji: '🌳' }, { id: 'copa', nome: 'Copa das árvores', emoji: '🌴' },
+];
+function escolherBichoCasa(botao) {
+  if (casas.selecionado) casas.selecionado.classList.remove('selecionado');
+  casas.selecionado = botao;
+  botao.classList.add('selecionado');
+  casas.retorno.textContent = `Agora escolha a casa de ${botao.dataset.nome}.`;
+}
+function levarParaCasa(destino) {
+  const b = casas.selecionado;
+  if (!b) { casas.retorno.textContent = 'Primeiro escolha um bicho.'; return; }
+  if (b.dataset.casa !== destino.dataset.casa) {
+    efeitos.errou(b); b.classList.add('balanca'); setTimeout(() => b.classList.remove('balanca'), 450);
+    casas.retorno.textContent = 'Quase! Será que ele mora aí?'; casas.retorno.className = 'retorno retorno--quase'; return;
+  }
+  const img = b.querySelector('img').cloneNode(); img.className = 'casa-morador'; img.alt = b.dataset.nome;
+  destino.appendChild(img); destino.disabled = true; b.remove(); casas.selecionado = null; casas.pontos += 1;
+  casas.pontosEl.textContent = casas.pontos; casas.retorno.textContent = `${img.alt} chegou em casa!`;
+  casas.retorno.className = 'retorno retorno--certo'; efeitos.acertou(destino); dizer(b.dataset.fala);
+  if (casas.pontos === BICHOS_CASAS.length) {
+    casas.retorno.textContent = 'Todo mundo em casa!'; casas.reiniciar.hidden = false; dizer('zuri/missao-cumprida');
+  }
+}
+function montarCasas() {
+  casas.pontos = 0; casas.selecionado = null; casas.pontosEl.textContent = '0'; casas.reiniciar.hidden = true;
+  casas.retorno.textContent = ''; casas.retorno.className = 'retorno'; casas.bichosEl.innerHTML = ''; casas.destinosEl.innerHTML = '';
+  embaralhar(BICHOS_CASAS).forEach((bicho) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'opcao-imagem casa-bicho';
+    b.dataset.casa = bicho.casa; b.dataset.nome = bicho.nome; b.dataset.fala = bicho.fala;
+    b.innerHTML = `<img src="${bicho.img}" alt=""><span>${bicho.nome}</span>`;
+    b.addEventListener('click', () => escolherBichoCasa(b));
+    b.addEventListener('pointerdown', (e) => { escolherBichoCasa(b); b.setPointerCapture(e.pointerId); b.classList.add('arrastando'); });
+    b.addEventListener('pointerup', (e) => {
+      b.classList.remove('arrastando'); const alvo = document.elementFromPoint(e.clientX, e.clientY)?.closest('.casa-destino');
+      if (alvo) levarParaCasa(alvo);
+    });
+    casas.bichosEl.appendChild(b);
+  });
+  DESTINOS_CASAS.forEach((casa) => {
+    const d = document.createElement('button'); d.type = 'button'; d.className = 'casa-destino'; d.dataset.casa = casa.id;
+    d.innerHTML = `<span class="casa-emoji" aria-hidden="true">${casa.emoji}</span><span>${casa.nome}</span>`;
+    d.addEventListener('click', () => levarParaCasa(d)); casas.destinosEl.appendChild(d);
+  });
+}
+if (casas.bichosEl) { casas.reiniciar.addEventListener('click', montarCasas); montarCasas(); }
+
+/* ---------------- 8. Repita a sequência ---------------- */
+const seq = {
+  grade: document.getElementById('seq-grade'), retorno: document.getElementById('seq-retorno'),
+  tamanho: document.getElementById('seq-tamanho'), recordeEl: document.getElementById('seq-recorde'),
+  comecar: document.getElementById('seq-comecar'), lista: [], entrada: [], botoes: [], mostrando: false, velocidade: 1.5, recorde: 0,
+};
+const SEQ_PERSONAGENS = [
+  ['Zuri', 'img/personagens/zuri.webp', '#F28C28', 523], ['Bolota', 'img/personagens/bolota.webp', '#7FA1C6', 659],
+  ['Lua', 'img/personagens/lua.webp', '#1FA2A8', 784], ['Fuxico', 'img/personagens/fuxico.webp', '#E5414F', 988],
+];
+function tocarNota(freq) {
+  if (!efeitos.somLigado()) return;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext; if (!AudioCtx) return;
+  seq.audio = seq.audio || new AudioCtx(); const osc = seq.audio.createOscillator(); const ganho = seq.audio.createGain();
+  osc.frequency.value = freq; ganho.gain.setValueAtTime(.08, seq.audio.currentTime); ganho.gain.exponentialRampToValueAtTime(.001, seq.audio.currentTime + .35);
+  osc.connect(ganho).connect(seq.audio.destination); osc.start(); osc.stop(seq.audio.currentTime + .35);
+}
+const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function acenderSeq(i, duracao = 450) {
+  const b = seq.botoes[i]; b.classList.add('aceso'); tocarNota(SEQ_PERSONAGENS[i][3]); await esperar(duracao * seq.velocidade); b.classList.remove('aceso');
+}
+async function mostrarSequencia() {
+  seq.mostrando = true; seq.entrada = []; seq.retorno.textContent = 'Olhe e escute!'; seq.botoes.forEach((b) => { b.disabled = true; });
+  await esperar(350);
+  for (const i of seq.lista) { await acenderSeq(i); await esperar(250 * seq.velocidade); }
+  seq.mostrando = false; seq.botoes.forEach((b) => { b.disabled = false; }); seq.retorno.textContent = 'Sua vez!'; dizer('zuri/seq-sua-vez');
+}
+async function tocarSeq(i) {
+  if (seq.mostrando || !seq.lista.length) return;
+  await acenderSeq(i, 220); const pos = seq.entrada.length;
+  if (seq.lista[pos] !== i) {
+    efeitos.errou(seq.grade); seq.retorno.textContent = 'Quase! Vou mostrar de novo.'; dizer('zuri/seq-quase');
+    seq.entrada = []; await esperar(800); mostrarSequencia(); return;
+  }
+  seq.entrada.push(i);
+  if (seq.entrada.length === seq.lista.length) {
+    efeitos.acertou(seq.grade); seq.recorde = Math.max(seq.recorde, seq.lista.length); seq.recordeEl.textContent = seq.recorde;
+    seq.retorno.textContent = 'Muito bem! A sequência vai crescer.'; seq.botoes.forEach((b) => { b.disabled = true; });
+    await esperar(800); seq.lista.push(sorteio(0, 3)); seq.tamanho.textContent = seq.lista.length; mostrarSequencia();
+  }
+}
+function iniciarSequencia() { seq.lista = [sorteio(0, 3), sorteio(0, 3)]; seq.tamanho.textContent = '2'; seq.comecar.textContent = 'Recomeçar'; mostrarSequencia(); }
+if (seq.grade) {
+  SEQ_PERSONAGENS.forEach(([nome, img, cor], i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'seq-botao'; b.style.setProperty('--cor', cor);
+    b.setAttribute('aria-label', `${i + 1}. ${nome}`); b.innerHTML = `<img src="${img}" alt="">`; b.addEventListener('click', () => tocarSeq(i)); seq.grade.appendChild(b); seq.botoes.push(b);
+  });
+  seq.comecar.addEventListener('click', iniciarSequencia);
+  document.querySelectorAll('[data-seq-vel]').forEach((b) => b.addEventListener('click', () => {
+    seq.velocidade = Number(b.dataset.seqVel); document.querySelectorAll('[data-seq-vel]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  document.addEventListener('keydown', (e) => { if (/^[1-4]$/.test(e.key) && document.activeElement?.tagName !== 'INPUT') tocarSeq(Number(e.key) - 1); });
+}
+
+/* ---------------- 9. Quebra-cabeça da turma ---------------- */
+const quebra = {
+  tab: document.getElementById('quebra-tabuleiro'), personagens: document.getElementById('quebra-personagens'),
+  retorno: document.getElementById('quebra-retorno'), jogadasEl: document.getElementById('quebra-jogadas'),
+  mostrar: document.getElementById('quebra-mostrar'), n: 2, personagem: null, pecas: [], selecionada: null, jogadas: 0, terminou: false,
+};
+const QUEBRA_PERSONAGENS = TURMA.map((p) => ({ ...p, voz: `${p.id}/apresenta` }));
+function posicaoPeca(peca, n) { const r = Math.floor(peca / n), c = peca % n; return `${c * 100 / (n - 1)}% ${r * 100 / (n - 1)}%`; }
+function atualizarQuebra() {
+  [...quebra.tab.children].filter((x) => x.classList.contains('quebra-peca')).forEach((el, pos) => {
+    const id = Number(el.dataset.id); el.classList.toggle('certa', id === pos); el.setAttribute('aria-label', `Peça ${id + 1}, posição ${pos + 1}`);
+  });
+  if (!quebra.terminou && [...quebra.tab.querySelectorAll('.quebra-peca')].every((el, pos) => Number(el.dataset.id) === pos)) {
+    quebra.terminou = true; quebra.tab.classList.add('montado'); quebra.retorno.textContent = 'Você montou a foto!'; quebra.retorno.className = 'retorno retorno--certo';
+    efeitos.acertou(quebra.tab); dizer(quebra.personagem.voz);
+  }
+}
+function trocarPecas(a, b) {
+  if (!a || !b || a === b || quebra.terminou) return;
+  const marcador = document.createElement('span'); a.before(marcador); b.before(a); marcador.replaceWith(b);
+  quebra.jogadas += 1; quebra.jogadasEl.textContent = quebra.jogadas; a.classList.remove('selecionada'); b.classList.remove('selecionada'); quebra.selecionada = null; atualizarQuebra();
+}
+function selecionarPeca(el) {
+  if (quebra.terminou) return;
+  if (!quebra.selecionada) { quebra.selecionada = el; el.classList.add('selecionada'); return; }
+  trocarPecas(quebra.selecionada, el);
+}
+function montarQuebra() {
+  quebra.terminou = false; quebra.selecionada = null; quebra.jogadas = 0; quebra.jogadasEl.textContent = '0'; quebra.retorno.textContent = ''; quebra.retorno.className = 'retorno';
+  quebra.tab.className = 'quebra-tabuleiro'; quebra.tab.style.setProperty('--n', quebra.n); quebra.tab.innerHTML = '';
+  let ids; do { ids = embaralhar([...Array(quebra.n * quebra.n).keys()]); } while (ids.some((id, pos) => id === pos));
+  ids.forEach((id) => {
+    const p = document.createElement('button'); p.type = 'button'; p.className = 'quebra-peca'; p.dataset.id = id; p.draggable = false;
+    p.style.backgroundImage = `url("${quebra.personagem.img}")`; p.style.backgroundSize = `${quebra.n * 100}% ${quebra.n * 100}%`; p.style.backgroundPosition = posicaoPeca(id, quebra.n);
+    p.addEventListener('click', () => selecionarPeca(p));
+    p.addEventListener('pointerdown', (e) => { p.setPointerCapture(e.pointerId); p.classList.add('arrastando'); });
+    p.addEventListener('pointerup', (e) => { p.classList.remove('arrastando'); const alvo = document.elementFromPoint(e.clientX, e.clientY)?.closest('.quebra-peca'); if (alvo && alvo !== p) trocarPecas(p, alvo); });
+    quebra.tab.appendChild(p);
+  });
+  atualizarQuebra();
+}
+if (quebra.tab) {
+  QUEBRA_PERSONAGENS.forEach((p, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'quebra-personagem'; b.setAttribute('aria-label', p.nome); b.setAttribute('aria-pressed', String(i === 0));
+    b.innerHTML = `<img src="${p.img}" alt="">`; b.addEventListener('click', () => { quebra.personagem = p; [...quebra.personagens.children].forEach((x) => x.setAttribute('aria-pressed', String(x === b))); montarQuebra(); }); quebra.personagens.appendChild(b);
+  });
+  quebra.personagem = QUEBRA_PERSONAGENS[0];
+  document.querySelectorAll('[data-quebra-n]').forEach((b) => b.addEventListener('click', () => { quebra.n = Number(b.dataset.quebraN); document.querySelectorAll('[data-quebra-n]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); montarQuebra(); }));
+  quebra.mostrar.addEventListener('click', () => { if (quebra.tab.querySelector('.quebra-preview')) return; const img = document.createElement('img'); img.className = 'quebra-preview'; img.src = quebra.personagem.img; img.alt = 'Foto completa'; quebra.tab.appendChild(img); setTimeout(() => img.remove(), 2000); });
+  montarQuebra();
+}
+
+/* ---------------- 10. Corrida do Bolota ---------------- */
+const corrida = {
+  canvas: document.getElementById('corrida-canvas'), retorno: document.getElementById('corrida-retorno'), comecar: document.getElementById('corrida-comecar'),
+  estrelasEl: document.getElementById('corrida-estrelas'), melhorEl: document.getElementById('corrida-melhor'), ctx: null, rodando: false,
+  visivel: true, estrelas: 0, melhor: 0, y: 0, vy: 0, angulo: 0, objetos: [], ultimo: 0, proximo: 1300, inicio: 0, quadro: 0,
+};
+function tamanhoCorrida() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), rect = corrida.canvas.getBoundingClientRect();
+  corrida.canvas.width = Math.max(320, Math.round(rect.width * dpr)); corrida.canvas.height = Math.round(corrida.canvas.width * 9 / 16); corrida.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); corrida.w = corrida.canvas.width / dpr; corrida.h = corrida.canvas.height / dpr;
+}
+function desenharCorrida(ts = 0) {
+  const c = corrida, x = c.w * .2, chao = c.h * .78, raio = Math.max(23, c.w * .045); c.ctx.clearRect(0, 0, c.w, c.h);
+  c.ctx.fillStyle = '#BFE8F5'; c.ctx.fillRect(0, 0, c.w, c.h); c.ctx.fillStyle = '#F5C66B'; c.ctx.fillRect(0, chao, c.w, c.h - chao);
+  c.ctx.fillStyle = '#2FB36B'; const desloca = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : (ts * .01 % (c.w + 80)); c.ctx.fillRect(c.w - desloca, chao - 75, 16, 75); c.ctx.fillRect(c.w - desloca - 15, chao - 55, 30, 12);
+  c.objetos.forEach((o) => { if (o.tipo === 'pedra') { c.ctx.fillStyle = '#80552F'; c.ctx.beginPath(); c.ctx.arc(o.x, chao - o.r, o.r, 0, Math.PI * 2); c.ctx.fill(); } else { c.ctx.font = `${o.r * 2}px sans-serif`; c.ctx.fillStyle = '#FFC93C'; c.ctx.fillText('★', o.x - o.r, o.y + o.r); } });
+  c.ctx.save(); c.ctx.translate(x, chao - raio - c.y); c.ctx.rotate(c.angulo); c.ctx.beginPath(); c.ctx.arc(0, 0, raio, 0, Math.PI * 2); c.ctx.clip(); if (c.bolota.complete) c.ctx.drawImage(c.bolota, -raio, -raio, raio * 2, raio * 2); c.ctx.restore(); c.ctx.strokeStyle = '#2A1A12'; c.ctx.lineWidth = 3; c.ctx.beginPath(); c.ctx.arc(x, chao - raio - c.y, raio, 0, Math.PI * 2); c.ctx.stroke();
+}
+function fimCorrida() { corrida.rodando = false; cancelAnimationFrame(corrida.quadro); corrida.retorno.textContent = 'Ops! O Bolota virou bolinha 😅'; corrida.retorno.className = 'retorno retorno--quase'; corrida.comecar.textContent = 'Rolar de novo'; corrida.comecar.hidden = false; }
+function pularCorrida() { if (!corrida.rodando || corrida.y > 1) return; corrida.vy = Math.max(420, corrida.h * 1.15); efeitos.toque(); }
+function quadroCorrida(ts) {
+  const c = corrida; if (!c.rodando || document.hidden || !c.visivel) return; const dt = Math.min((ts - (c.ultimo || ts)) / 1000, .035); c.ultimo = ts;
+  const chao = c.h * .78, raio = Math.max(23, c.w * .045), bx = c.w * .2, vel = Math.min(250, 150 + (ts - c.inicio) / 250);
+  c.vy -= c.h * 2.7 * dt; c.y = Math.max(0, c.y + c.vy * dt); if (!c.y) c.vy = 0; c.angulo += vel * dt / raio;
+  if (ts >= c.proximo) { const estrela = Math.random() < .35; c.objetos.push(estrela ? { tipo: 'estrela', x: c.w + 30, y: chao - raio * 3.2, r: 16 } : { tipo: 'pedra', x: c.w + 30, r: sorteio(16, 25) }); c.proximo = ts + sorteio(1150, 1900); }
+  c.objetos.forEach((o) => { o.x -= vel * dt; });
+  c.objetos = c.objetos.filter((o) => {
+    if (o.tipo === 'estrela' && Math.hypot(o.x - bx, o.y - (chao - raio - c.y)) < raio + o.r) { c.estrelas += 1; c.melhor = Math.max(c.melhor, c.estrelas); c.estrelasEl.textContent = c.estrelas; c.melhorEl.textContent = c.melhor; if (c.estrelas % 5 === 0) efeitos.acertou(c.canvas); return false; }
+    if (o.tipo === 'pedra' && Math.abs(o.x - bx) < raio + o.r - 7 && c.y < o.r * 1.25) { fimCorrida(); return false; } return o.x > -60;
+  });
+  desenharCorrida(ts); if (c.rodando) c.quadro = requestAnimationFrame(quadroCorrida);
+}
+function iniciarCorrida() { tamanhoCorrida(); corrida.rodando = true; corrida.estrelas = 0; corrida.estrelasEl.textContent = '0'; corrida.y = 0; corrida.vy = 0; corrida.objetos = []; corrida.ultimo = 0; corrida.inicio = performance.now(); corrida.proximo = corrida.inicio + 1200; corrida.retorno.textContent = 'Toque para pular!'; corrida.retorno.className = 'retorno'; corrida.comecar.hidden = true; corrida.canvas.focus(); corrida.quadro = requestAnimationFrame(quadroCorrida); }
+if (corrida.canvas) {
+  corrida.ctx = corrida.canvas.getContext('2d'); corrida.bolota = new Image(); corrida.bolota.src = 'img/personagens/bolota.webp'; corrida.bolota.onload = () => { tamanhoCorrida(); desenharCorrida(); };
+  corrida.comecar.addEventListener('click', iniciarCorrida); corrida.canvas.addEventListener('pointerdown', pularCorrida); corrida.canvas.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.key === 'ArrowUp') { e.preventDefault(); pularCorrida(); } });
+  addEventListener('resize', () => { tamanhoCorrida(); desenharCorrida(); }); document.addEventListener('visibilitychange', () => { if (!document.hidden && corrida.rodando) { corrida.ultimo = 0; corrida.quadro = requestAnimationFrame(quadroCorrida); } });
+  new IntersectionObserver(([e]) => { corrida.visivel = e.isIntersecting; if (corrida.visivel && corrida.rodando) { corrida.ultimo = 0; corrida.quadro = requestAnimationFrame(quadroCorrida); } }).observe(corrida.canvas);
+}

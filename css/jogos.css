@@ -119,7 +119,7 @@ button:disabled { cursor: default; opacity: .55; }
 
 .niveis { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
 .nivel {
-  font-family: var(--fonte); font-weight: 900; cursor: pointer; padding: 8px 16px; border-radius: 999px;
+  font-family: var(--fonte); font-weight: 900; cursor: pointer; min-height: 56px; padding: 8px 16px; border-radius: 999px;
   border: 2px solid var(--tinta); background: #fff;
 }
 .nivel[aria-pressed="true"] { background: var(--turquesa); color: #fff; }
@@ -198,3 +198,69 @@ button:disabled { cursor: default; opacity: .55; }
 }
 .lab-seta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--tinta); }
 .lab-cima { grid-area: cima; } .lab-esq { grid-area: esq; } .lab-dir { grid-area: dir; } .lab-baixo { grid-area: baixo; }
+
+/* Cada bicho na sua casa */
+.painel--casas { max-width: 960px; margin: 0 auto; }
+.casas-bichos, .casas-destinos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.casas-bichos { margin-bottom: 28px; min-height: 150px; }
+.casa-bicho { min-width: 0; min-height: 120px; touch-action: none; user-select: none; }
+.casa-bicho.selecionado { outline: 5px solid var(--sol); outline-offset: 4px; transform: translateY(-4px); }
+.casa-bicho.arrastando { position: relative; z-index: 8; opacity: .82; }
+.casa-destino {
+  min-height: 170px; padding: 12px; border: var(--borda); border-radius: var(--raio); box-shadow: 0 6px 0 var(--tinta);
+  font: 900 1rem var(--fonte); color: var(--tinta); cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px; text-align: center;
+}
+.casa-destino .casa-emoji { font-size: 2.5rem; }
+.casa-destino .casa-morador { width: 84px; height: 84px; object-fit: cover; border: 3px solid var(--tinta); border-radius: 50%; background: #fff; }
+.casa-destino[data-casa="praia"] { background: #9FE0E3; }
+.casa-destino[data-casa="caatinga"] { background: #FFE07B; }
+.casa-destino[data-casa="mata"] { background: #8DE0AC; }
+.casa-destino[data-casa="copa"] { background: #FFBC72; }
+.casa-destino.alvo { outline: 6px solid #fff; outline-offset: -10px; }
+
+/* Repita a sequência */
+.painel--sequencia { max-width: 620px; margin: 0 auto; }
+.seq-grade { display: grid; grid-template-columns: repeat(2, minmax(120px, 210px)); justify-content: center; gap: 18px; }
+.seq-botao {
+  aspect-ratio: 1; min-height: 120px; padding: 8px; border: 8px solid var(--cor); border-radius: 50%; background: #fff;
+  box-shadow: 0 6px 0 var(--tinta); cursor: pointer; transition: transform .16s ease, filter .16s ease;
+}
+.seq-botao img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; pointer-events: none; }
+.seq-botao.aceso { transform: scale(1.12); filter: brightness(1.22) drop-shadow(0 0 12px var(--cor)); }
+
+/* Quebra-cabeça da turma */
+.painel--quebra { max-width: 760px; margin: 0 auto; }
+.quebra-personagens { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 18px; }
+.quebra-personagem { width: 64px; min-height: 64px; padding: 0; border: 3px solid var(--tinta); border-radius: 50%; overflow: hidden; background: #fff; cursor: pointer; }
+.quebra-personagem img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.quebra-personagem[aria-pressed="true"] { outline: 5px solid var(--sol); outline-offset: 2px; }
+.quebra-tabuleiro {
+  --n: 2; position: relative; width: min(100%, 420px); aspect-ratio: 1; margin: 0 auto; display: grid;
+  grid-template-columns: repeat(var(--n), 1fr); border: var(--borda); border-radius: 14px; overflow: hidden;
+  background: var(--creme); touch-action: none;
+}
+.quebra-peca { min-width: 0; padding: 0; border: 2px solid var(--tinta); background-repeat: no-repeat; cursor: pointer; transition: transform .15s ease; }
+.quebra-peca.certa { box-shadow: inset 0 0 0 4px #2FB36B; }
+.quebra-peca.selecionada { outline: 6px solid var(--sol); outline-offset: -8px; z-index: 2; }
+.quebra-peca.arrastando { transform: scale(.94); opacity: .75; }
+.quebra-tabuleiro.montado .quebra-peca { border-color: transparent; box-shadow: none; }
+.quebra-preview { position: absolute; inset: 0; z-index: 5; width: 100%; height: 100%; object-fit: cover; opacity: .72; pointer-events: none; }
+
+/* Corrida do Bolota */
+.painel--corrida { max-width: 840px; margin: 0 auto; }
+#corrida-canvas { width: min(100%, 760px); aspect-ratio: 16 / 9; display: block; margin: 0 auto; border: var(--borda); border-radius: var(--raio); background: #BFE8F5; touch-action: none; }
+.jogo .acoes-jogo .botao { min-height: 56px; }
+
+@media (max-width: 620px) {
+  .casas-bichos, .casas-destinos { grid-template-columns: repeat(2, 1fr); }
+  .casas-bichos { min-height: 270px; }
+  .casa-destino { min-height: 150px; }
+  .seq-grade { gap: 12px; }
+  .seq-botao { min-height: 112px; border-width: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seq-botao, .quebra-peca, .casa-bicho { transition: none; }
+  .seq-botao.aceso { transform: none; outline: 8px solid var(--sol); }
+}

@@ -48,6 +48,10 @@
         <a class="botao botao--claro" href="#sombra">De quem é a sombra?</a>
         <a class="botao botao--claro" href="#ouca">Ouça e toque</a>
         <a class="botao botao--claro" href="#labirinto">Labirinto da Lua</a>
+        <a class="botao botao--claro" href="#casas">Cada bicho na sua casa</a>
+        <a class="botao botao--claro" href="#sequencia">Repita a sequência</a>
+        <a class="botao botao--claro" href="#quebra">Quebra-cabeça</a>
+        <a class="botao botao--claro" href="#corrida">Corrida do Bolota</a>
       </nav>
     </div>
   </section>
@@ -192,6 +196,83 @@
         </div>
       </div>
       <p class="dica">Para os pais: no celular, dá para arrastar o dedo no labirinto ou tocar no quadradinho ao lado da Lua. Conte junto quantos passos ela deu. Na vida real, as tartaruguinhas seguem o brilho da lua no mar, por isso luz forte na praia atrapalha o caminho delas.</p>
+    </div>
+  </section>
+
+  <!-- 7. Cada bicho na sua casa -->
+  <section class="secao secao--sol jogo" id="casas">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-sol">Cada bicho na sua casa</h2>
+        <p class="placar" aria-live="polite">Em casa: <b id="casas-pontos">0</b>/4</p>
+      </div>
+      <div class="painel painel--casas">
+        <p class="pergunta pergunta--menor">Leve cada bicho para o lugar onde ele vive.</p>
+        <div class="casas-bichos" id="casas-bichos" aria-label="Bichos para escolher"></div>
+        <div class="casas-destinos" id="casas-destinos" aria-label="Casas dos bichos"></div>
+        <p class="retorno" id="casas-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo">
+          <button class="botao botao--turquesa" type="button" id="casas-reiniciar" hidden>Jogar de novo</button>
+        </div>
+      </div>
+      <p class="dica">Para os pais: conversem sobre os biomas do Brasil e sobre como cada animal depende de sua casa na natureza.</p>
+    </div>
+  </section>
+
+  <!-- 8. Repita a sequência -->
+  <section class="secao secao--azul jogo" id="sequencia">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-azul">Repita a sequência</h2>
+        <p class="placar" aria-live="polite">Sequência: <b id="seq-tamanho">0</b> · Recorde: <b id="seq-recorde">0</b></p>
+      </div>
+      <div class="painel painel--sequencia">
+        <div class="niveis" role="group" aria-label="Velocidade da sequência">
+          <button class="nivel" type="button" data-seq-vel="1.5" aria-pressed="true">Devagar</button>
+          <button class="nivel" type="button" data-seq-vel="1" aria-pressed="false">Normal</button>
+        </div>
+        <div class="seq-grade" id="seq-grade" aria-label="Botões da sequência"></div>
+        <p class="retorno" id="seq-retorno" aria-live="assertive">Toque em Começar.</p>
+        <div class="acoes-jogo"><button class="botao" type="button" id="seq-comecar">Começar</button></div>
+      </div>
+      <p class="dica">Para os pais: diga os nomes dos personagens enquanto a sequência aparece. No teclado, use 1, 2, 3 e 4.</p>
+    </div>
+  </section>
+
+  <!-- 9. Quebra-cabeça da turma -->
+  <section class="secao secao--turquesa jogo" id="quebra">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-turquesa">Quebra-cabeça da turma</h2>
+        <p class="placar" aria-live="polite">Jogadas: <b id="quebra-jogadas">0</b></p>
+      </div>
+      <div class="painel painel--quebra">
+        <div class="quebra-personagens" id="quebra-personagens" role="group" aria-label="Escolha o personagem"></div>
+        <div class="niveis" role="group" aria-label="Nível do quebra-cabeça">
+          <button class="nivel" type="button" data-quebra-n="2" aria-pressed="true">Fácil · 2 por 2</button>
+          <button class="nivel" type="button" data-quebra-n="3" aria-pressed="false">Médio · 3 por 3</button>
+        </div>
+        <div class="quebra-tabuleiro" id="quebra-tabuleiro" aria-label="Quebra-cabeça"></div>
+        <p class="retorno" id="quebra-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo"><button class="botao botao--claro" type="button" id="quebra-mostrar">Mostrar a foto</button></div>
+      </div>
+      <p class="dica">Para os pais: toque em duas peças para trocá-las ou arraste uma sobre a outra. Observe cores e partes do rosto.</p>
+    </div>
+  </section>
+
+  <!-- 10. Corrida do Bolota -->
+  <section class="secao jogo" id="corrida">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-laranja">Corrida do Bolota</h2>
+        <p class="placar" aria-live="polite">Estrelas: <b id="corrida-estrelas">0</b> · Melhor corrida: <b id="corrida-melhor">0</b></p>
+      </div>
+      <div class="painel painel--corrida">
+        <canvas id="corrida-canvas" width="760" height="428" tabindex="0" role="application" aria-label="Corrida do Bolota. Toque, clique ou aperte espaço para pular."></canvas>
+        <p class="retorno" id="corrida-retorno" aria-live="assertive">Toque em Começar para rolar!</p>
+        <div class="acoes-jogo"><button class="botao" type="button" id="corrida-comecar">Começar</button></div>
+      </div>
+      <p class="dica">Para os pais: toque na tela para pular as pedras e pegar estrelas. Sem pressa: a velocidade aumenta bem devagar.</p>
     </div>
   </section>
 </main>
