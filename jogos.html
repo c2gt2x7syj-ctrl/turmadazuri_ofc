@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogos | Turma da Zuri</title>
+  <meta name="description" content="Jogos educativos da Turma da Zuri: contar com os bichos do Brasil, jogo da memória e Quem sou eu?">
+  <meta name="theme-color" content="#1FA2A8">
+  <link rel="icon" href="img/personagens/zuri.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/jogos.css">
+</head>
+<body>
+
+<header class="topo">
+  <div class="container">
+    <a href="index.html" class="logo contorno c-laranja">Turma da Zuri</a>
+    <button class="botao botao--claro menu-botao" aria-expanded="false" aria-controls="menu">Menu</button>
+    <nav aria-label="Principal">
+      <ul class="menu" id="menu">
+        <li><a href="index.html#turma">A turma</a></li>
+        <li><a href="index.html#episodios">Episódios</a></li>
+        <li><a href="index.html#colorir">Para colorir</a></li>
+        <li><a href="jogos.html" aria-current="page">Jogos</a></li>
+        <li><a href="index.html#pais">Para pais</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero-jogos">
+    <div class="container">
+      <span class="selo">Para jogar junto</span>
+      <h1 class="contorno c-creme">Jogos da turma</h1>
+      <p class="intro">Jogos simples para jogar com a criança: contar, lembrar e adivinhar com os bichos do Brasil. Ligue o som, que a Zuri fala os números em português e em inglês.</p>
+      <div class="barra-jogo">
+        <p class="estrelas" id="estrelas" aria-live="polite"><span aria-hidden="true">★</span> <b id="estrelas-total">0</b> estrelas</p>
+        <button class="botao botao--claro botao-som" type="button" id="som" aria-pressed="true"><span>Som ligado</span></button>
+      </div>
+      <nav class="atalhos" aria-label="Escolha um jogo">
+        <a class="botao" href="#contar">Vamos contar</a>
+        <a class="botao botao--claro" href="#memoria">Jogo da memória</a>
+        <a class="botao botao--claro" href="#adivinha">Quem sou eu?</a>
+        <a class="botao botao--claro" href="#sombra">De quem é a sombra?</a>
+        <a class="botao botao--claro" href="#ouca">Ouça e toque</a>
+        <a class="botao botao--claro" href="#labirinto">Labirinto da Lua</a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- 1. Vamos contar -->
+  <section class="secao jogo" id="contar">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-laranja">Vamos contar!</h2>
+        <p class="placar" aria-live="polite">Acertos: <b id="contar-pontos">0</b></p>
+      </div>
+      <div class="painel">
+        <div class="niveis" role="group" aria-label="Nível">
+          <button class="nivel" type="button" data-nivel="5" aria-pressed="true">Fácil · até 5</button>
+          <button class="nivel" type="button" data-nivel="10" aria-pressed="false">Desafio · até 10</button>
+        </div>
+        <p class="pergunta" id="contar-pergunta">Quantos bichinhos você vê?</p>
+        <div class="campo-contar" id="contar-campo" aria-live="polite"></div>
+        <div class="opcoes" id="contar-opcoes"></div>
+        <p class="retorno" id="contar-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo">
+          <button class="botao botao--claro" type="button" id="contar-ouvir">Ouvir a pergunta</button>
+          <button class="botao botao--turquesa" type="button" id="contar-proximo" hidden>Próximo</button>
+        </div>
+      </div>
+      <p class="dica">Para os pais: peça para a criança tocar em cada bichinho enquanto conta em voz alta. Depois, repitam o número em inglês.</p>
+    </div>
+  </section>
+
+  <!-- 2. Jogo da memória -->
+  <section class="secao secao--turquesa jogo" id="memoria">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-turquesa">Jogo da memória</h2>
+        <p class="placar" aria-live="polite">Jogadas: <b id="memoria-jogadas">0</b> · Pares: <b id="memoria-pares">0</b>/6</p>
+      </div>
+      <div class="grade-memoria" id="memoria-grade"></div>
+      <p class="retorno retorno--centro" id="memoria-retorno" aria-live="polite"></p>
+      <div class="acoes-jogo acoes-jogo--centro">
+        <button class="botao" type="button" id="memoria-reiniciar">Embaralhar de novo</button>
+      </div>
+      <p class="dica">Para os pais: a cada par encontrado, a Zuri diz o nome do personagem e um bicho do Brasil. Conversem sobre ele!</p>
+    </div>
+  </section>
+
+  <!-- 3. Quem sou eu? -->
+  <section class="secao secao--sol jogo" id="adivinha">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-sol">Quem sou eu?</h2>
+        <p class="placar" aria-live="polite">Rodada <b id="adivinha-rodada">1</b> de <b id="adivinha-total">4</b></p>
+      </div>
+      <div class="painel painel--adivinha">
+        <ol class="pistas pistas--jogo" id="adivinha-pistas"></ol>
+        <div class="acoes-jogo">
+          <button class="botao botao--claro" type="button" id="adivinha-pista">Mais uma pista</button>
+          <button class="botao botao--claro" type="button" id="adivinha-ouvir">Ouvir as pistas</button>
+        </div>
+        <p class="pergunta pergunta--menor">Toque no bicho certo:</p>
+        <div class="opcoes-imagem" id="adivinha-opcoes"></div>
+        <p class="retorno" id="adivinha-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo">
+          <button class="botao botao--turquesa" type="button" id="adivinha-proximo" hidden>Próximo bicho</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. De quem é a sombra? -->
+  <section class="secao jogo" id="sombra">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-vermelho">De quem é a sombra?</h2>
+        <p class="placar" aria-live="polite">Rodada <b id="sombra-rodada">1</b> de <b id="sombra-total">4</b></p>
+      </div>
+      <div class="painel painel--adivinha">
+        <div class="palco-sombra" id="sombra-palco">
+          <img id="sombra-img" src="" alt="Sombra de um personagem da turma">
+        </div>
+        <p class="pergunta pergunta--menor">Quem está escondido aqui?</p>
+        <div class="opcoes-imagem" id="sombra-opcoes"></div>
+        <p class="retorno" id="sombra-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo">
+          <button class="botao botao--turquesa" type="button" id="sombra-proximo" hidden>Próxima sombra</button>
+        </div>
+      </div>
+      <p class="dica">Para os pais: antes de escolher, pergunte o que a criança vê na sombra. Orelhas grandes? Um rabo listrado? Cabelo em dois puffs?</p>
+    </div>
+  </section>
+
+  <!-- 5. Ouça e toque -->
+  <section class="secao secao--azul jogo" id="ouca">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-azul">Ouça e toque</h2>
+        <p class="placar" aria-live="polite">Acertos: <b id="ouca-pontos">0</b></p>
+      </div>
+      <div class="painel painel--adivinha">
+        <p class="pergunta">Ouça a palavra em inglês e toque na imagem certa.</p>
+        <div class="acoes-jogo">
+          <button class="botao botao-ouvir" type="button" id="ouca-ouvir"><span aria-hidden="true">🔊</span> <span id="ouca-ouvir-texto">Começar</span></button>
+        </div>
+        <p class="palavra-ingles" id="ouca-palavra" aria-live="polite"></p>
+        <div class="opcoes-imagem" id="ouca-opcoes"></div>
+        <p class="retorno" id="ouca-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo">
+          <button class="botao botao--turquesa" type="button" id="ouca-proximo" hidden>Próxima palavra</button>
+        </div>
+      </div>
+      <p class="dica">Para os pais: depois de acertar, repitam a palavra três vezes juntos, como a Zuri faz nos episódios. Se o aparelho não falar, confira se o volume está ligado.</p>
+    </div>
+  </section>
+  <!-- 6. Labirinto da Lua -->
+  <section class="secao secao--turquesa jogo" id="labirinto">
+    <div class="container">
+      <div class="cabeca-jogo">
+        <h2 class="titulo-secao contorno c-turquesa">Labirinto da Lua</h2>
+        <p class="placar" aria-live="polite">Chegadas ao mar: <b id="lab-pontos">0</b></p>
+      </div>
+      <div class="painel painel--labirinto">
+        <div class="niveis" role="group" aria-label="Tamanho do labirinto">
+          <button class="nivel" type="button" data-lab="5" aria-pressed="true">Fácil</button>
+          <button class="nivel" type="button" data-lab="7" aria-pressed="false">Médio</button>
+          <button class="nivel" type="button" data-lab="9" aria-pressed="false">Difícil</button>
+        </div>
+        <p class="pergunta pergunta--menor">Leve a Lua pela areia até o mar. Cuidado com os muros!</p>
+        <div class="lab-area">
+          <div class="lab-ninho" aria-hidden="true">🥚 Ninho</div>
+          <div class="lab-tabuleiro" id="lab-tabuleiro" tabindex="0" role="application" aria-label="Labirinto. Use as setas do teclado ou os botões para mover a Lua."></div>
+          <div class="lab-mar" aria-hidden="true"><span>🌊 Mar 🌊</span></div>
+        </div>
+        <div class="lab-controles" aria-label="Mover a Lua">
+          <button class="lab-seta lab-cima" type="button" data-dir="0" aria-label="Para cima">▲</button>
+          <button class="lab-seta lab-esq" type="button" data-dir="3" aria-label="Para a esquerda">◀</button>
+          <button class="lab-seta lab-dir" type="button" data-dir="1" aria-label="Para a direita">▶</button>
+          <button class="lab-seta lab-baixo" type="button" data-dir="2" aria-label="Para baixo">▼</button>
+        </div>
+        <p class="retorno" id="lab-retorno" aria-live="assertive"></p>
+        <div class="acoes-jogo">
+          <button class="botao botao--claro" type="button" id="lab-dica">Mostrar o caminho</button>
+          <button class="botao botao--turquesa" type="button" id="lab-novo">Novo labirinto</button>
+        </div>
+      </div>
+      <p class="dica">Para os pais: no celular, dá para arrastar o dedo no labirinto ou tocar no quadradinho ao lado da Lua. Conte junto quantos passos ela deu. Na vida real, as tartaruguinhas seguem o brilho da lua no mar, por isso luz forte na praia atrapalha o caminho delas.</p>
+    </div>
+  </section>
+</main>
+
+<div class="festa" id="festa" hidden>
+  <div class="festa-cartao" role="dialog" aria-modal="true" aria-labelledby="festa-titulo">
+    <img src="img/personagens/zuri.webp" alt="">
+    <p class="festa-estrelas"><span aria-hidden="true">★</span> <b id="festa-numero">5</b></p>
+    <h2 id="festa-titulo" class="contorno c-laranja">Missão cumprida!</h2>
+    <p>Você ganhou mais estrelas. A turma está orgulhosa de você!</p>
+    <button class="botao" type="button" id="festa-fechar">Continuar jogando</button>
+  </div>
+</div>
+
+<footer class="rodape">
+  <div class="container">
+    <span class="logo contorno c-laranja">Turma da Zuri</span>
+    <div class="redes">
+      <a class="botao" href="https://www.youtube.com/@turmadazuri-b1l" target="_blank" rel="noopener">YouTube</a>
+      <a class="botao botao--claro" href="https://www.instagram.com/turmadazuri" target="_blank" rel="noopener">Instagram</a>
+      <a class="botao botao--claro" href="https://www.tiktok.com/@turmadazuri" target="_blank" rel="noopener">TikTok</a>
+    </div>
+    <small>© 2026 Turma da Zuri.</small>
+  </div>
+</footer>
+
+<script src="js/main.js" defer></script>
+<script src="js/efeitos.js" defer></script>
+<script src="js/vozes.js" defer></script>
+<script src="js/jogos.js" defer></script>
+</body>
+</html>
