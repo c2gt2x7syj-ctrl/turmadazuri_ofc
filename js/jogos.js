@@ -835,41 +835,47 @@ if (quebra.tab) {
   montarQuebra();
 }
 
-/* ---------------- 10. Corrida do Bolota ---------------- */
-const corrida = {
-  canvas: document.getElementById('corrida-canvas'), retorno: document.getElementById('corrida-retorno'), comecar: document.getElementById('corrida-comecar'),
-  estrelasEl: document.getElementById('corrida-estrelas'), melhorEl: document.getElementById('corrida-melhor'), ctx: null, rodando: false,
-  visivel: true, estrelas: 0, melhor: 0, y: 0, vy: 0, angulo: 0, objetos: [], ultimo: 0, proximo: 1300, inicio: 0, quadro: 0,
+/* ---------------- 10. Onde está o Bolota? ---------------- */
+const esconde = {
+  fundo: document.getElementById('esconde-fundo'), bolota: document.getElementById('esconde-bolota'),
+  fuxico: document.getElementById('esconde-fuxico'), retorno: document.getElementById('esconde-retorno'),
+  pontosEl: document.getElementById('esconde-pontos'), cenaEl: document.getElementById('esconde-cena'),
+  novo: document.getElementById('esconde-novo'), pontos: 0, cena: -1, travado: false,
 };
-function tamanhoCorrida() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2), rect = corrida.canvas.getBoundingClientRect();
-  corrida.canvas.width = Math.max(320, Math.round(rect.width * dpr)); corrida.canvas.height = Math.round(corrida.canvas.width * 9 / 16); corrida.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); corrida.w = corrida.canvas.width / dpr; corrida.h = corrida.canvas.height / dpr;
+const CENAS_ESCONDE = [
+  { src: 'img/jogos/onde-bolota/quintal.jpg', alt: 'Quintal colorido da Turma da Zuri', posicoes: [[8, 48], [35, 58], [58, 43], [78, 52], [19, 20], [67, 18]] },
+  { src: 'img/jogos/onde-bolota/floresta.jpg', alt: 'Clareira verde da Mata Atlântica', posicoes: [[10, 48], [35, 54], [58, 52], [78, 38], [23, 28], [65, 19]] },
+  { src: 'img/jogos/onde-bolota/praia.jpg', alt: 'Praia e manguezal ensolarados', posicoes: [[8, 48], [32, 57], [55, 53], [78, 42], [18, 22], [68, 17]] },
+];
+function posicionarEscondido(el, pos, giro) {
+  el.style.left = `${pos[0]}%`; el.style.top = `${pos[1]}%`; el.style.transform = `rotate(${giro}deg)`;
 }
-function desenharCorrida(ts = 0) {
-  const c = corrida, x = c.w * .2, chao = c.h * .78, raio = Math.max(23, c.w * .045); c.ctx.clearRect(0, 0, c.w, c.h);
-  c.ctx.fillStyle = '#BFE8F5'; c.ctx.fillRect(0, 0, c.w, c.h); c.ctx.fillStyle = '#F5C66B'; c.ctx.fillRect(0, chao, c.w, c.h - chao);
-  c.ctx.fillStyle = '#2FB36B'; const desloca = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : (ts * .01 % (c.w + 80)); c.ctx.fillRect(c.w - desloca, chao - 75, 16, 75); c.ctx.fillRect(c.w - desloca - 15, chao - 55, 30, 12);
-  c.objetos.forEach((o) => { if (o.tipo === 'pedra') { c.ctx.fillStyle = '#80552F'; c.ctx.beginPath(); c.ctx.arc(o.x, chao - o.r, o.r, 0, Math.PI * 2); c.ctx.fill(); } else { c.ctx.font = `${o.r * 2}px sans-serif`; c.ctx.fillStyle = '#FFC93C'; c.ctx.fillText('★', o.x - o.r, o.y + o.r); } });
-  c.ctx.save(); c.ctx.translate(x, chao - raio - c.y); c.ctx.rotate(c.angulo); c.ctx.beginPath(); c.ctx.arc(0, 0, raio, 0, Math.PI * 2); c.ctx.clip(); if (c.bolota.complete) c.ctx.drawImage(c.bolota, -raio, -raio, raio * 2, raio * 2); c.ctx.restore(); c.ctx.strokeStyle = '#2A1A12'; c.ctx.lineWidth = 3; c.ctx.beginPath(); c.ctx.arc(x, chao - raio - c.y, raio, 0, Math.PI * 2); c.ctx.stroke();
+function somTonhonhoin() {
+  if (!efeitos.somLigado()) return;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext; if (!AudioCtx) return;
+  esconde.audio = esconde.audio || new AudioCtx(); const agora = esconde.audio.currentTime;
+  const osc = esconde.audio.createOscillator(); const ganho = esconde.audio.createGain();
+  osc.type = 'triangle'; osc.frequency.setValueAtTime(620, agora); osc.frequency.exponentialRampToValueAtTime(135, agora + .42);
+  ganho.gain.setValueAtTime(.001, agora); ganho.gain.exponentialRampToValueAtTime(.18, agora + .03); ganho.gain.exponentialRampToValueAtTime(.001, agora + .48);
+  osc.connect(ganho).connect(esconde.audio.destination); osc.start(agora); osc.stop(agora + .5);
 }
-function fimCorrida() { corrida.rodando = false; cancelAnimationFrame(corrida.quadro); corrida.retorno.textContent = 'Ops! O Bolota virou bolinha 😅'; corrida.retorno.className = 'retorno retorno--quase'; corrida.comecar.textContent = 'Rolar de novo'; corrida.comecar.hidden = false; }
-function pularCorrida() { if (!corrida.rodando || corrida.y > 1) return; corrida.vy = Math.max(420, corrida.h * 1.15); efeitos.toque(); }
-function quadroCorrida(ts) {
-  const c = corrida; if (!c.rodando || document.hidden || !c.visivel) return; const dt = Math.min((ts - (c.ultimo || ts)) / 1000, .035); c.ultimo = ts;
-  const chao = c.h * .78, raio = Math.max(23, c.w * .045), bx = c.w * .2, vel = Math.min(250, 150 + (ts - c.inicio) / 250);
-  c.vy -= c.h * 2.7 * dt; c.y = Math.max(0, c.y + c.vy * dt); if (!c.y) c.vy = 0; c.angulo += vel * dt / raio;
-  if (ts >= c.proximo) { const estrela = Math.random() < .35; c.objetos.push(estrela ? { tipo: 'estrela', x: c.w + 30, y: chao - raio * 3.2, r: 16 } : { tipo: 'pedra', x: c.w + 30, r: sorteio(16, 25) }); c.proximo = ts + sorteio(1150, 1900); }
-  c.objetos.forEach((o) => { o.x -= vel * dt; });
-  c.objetos = c.objetos.filter((o) => {
-    if (o.tipo === 'estrela' && Math.hypot(o.x - bx, o.y - (chao - raio - c.y)) < raio + o.r) { c.estrelas += 1; c.melhor = Math.max(c.melhor, c.estrelas); c.estrelasEl.textContent = c.estrelas; c.melhorEl.textContent = c.melhor; if (c.estrelas % 5 === 0) efeitos.acertou(c.canvas); return false; }
-    if (o.tipo === 'pedra' && Math.abs(o.x - bx) < raio + o.r - 7 && c.y < o.r * 1.25) { fimCorrida(); return false; } return o.x > -60;
+function novaCenaEsconde() {
+  const e = esconde; e.travado = false; e.cena = (e.cena + 1) % CENAS_ESCONDE.length;
+  const cena = CENAS_ESCONDE[e.cena]; e.fundo.src = cena.src; e.fundo.alt = cena.alt; e.cenaEl.textContent = e.cena + 1;
+  const lugares = embaralhar([...cena.posicoes]); posicionarEscondido(e.bolota, lugares[0], sorteio(-12, 12)); posicionarEscondido(e.fuxico, lugares[1], sorteio(-12, 12));
+  e.bolota.classList.remove('achou'); e.fuxico.classList.remove('pegadinha'); e.bolota.disabled = false; e.fuxico.disabled = false;
+  e.retorno.textContent = 'Onde será que o Bolota se escondeu?'; e.retorno.className = 'retorno';
+}
+if (esconde.bolota) {
+  esconde.bolota.addEventListener('click', () => {
+    if (esconde.travado) return; esconde.travado = true; esconde.bolota.disabled = true; esconde.fuxico.disabled = true;
+    esconde.pontos += 1; esconde.pontosEl.textContent = esconde.pontos; esconde.bolota.classList.add('achou');
+    esconde.retorno.textContent = 'Achou o Bolota! Muito bem!'; esconde.retorno.className = 'retorno retorno--certo'; efeitos.acertou(esconde.bolota); dizer('bolota/apresenta');
+    setTimeout(novaCenaEsconde, 1100);
   });
-  desenharCorrida(ts); if (c.rodando) c.quadro = requestAnimationFrame(quadroCorrida);
-}
-function iniciarCorrida() { tamanhoCorrida(); corrida.rodando = true; corrida.estrelas = 0; corrida.estrelasEl.textContent = '0'; corrida.y = 0; corrida.vy = 0; corrida.objetos = []; corrida.ultimo = 0; corrida.inicio = performance.now(); corrida.proximo = corrida.inicio + 1200; corrida.retorno.textContent = 'Toque para pular!'; corrida.retorno.className = 'retorno'; corrida.comecar.hidden = true; corrida.canvas.focus(); corrida.quadro = requestAnimationFrame(quadroCorrida); }
-if (corrida.canvas) {
-  corrida.ctx = corrida.canvas.getContext('2d'); corrida.bolota = new Image(); corrida.bolota.src = 'img/personagens/bolota.webp'; corrida.bolota.onload = () => { tamanhoCorrida(); desenharCorrida(); };
-  corrida.comecar.addEventListener('click', iniciarCorrida); corrida.canvas.addEventListener('pointerdown', pularCorrida); corrida.canvas.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.key === 'ArrowUp') { e.preventDefault(); pularCorrida(); } });
-  addEventListener('resize', () => { tamanhoCorrida(); desenharCorrida(); }); document.addEventListener('visibilitychange', () => { if (!document.hidden && corrida.rodando) { corrida.ultimo = 0; corrida.quadro = requestAnimationFrame(quadroCorrida); } });
-  new IntersectionObserver(([e]) => { corrida.visivel = e.isIntersecting; if (corrida.visivel && corrida.rodando) { corrida.ultimo = 0; corrida.quadro = requestAnimationFrame(quadroCorrida); } }).observe(corrida.canvas);
+  esconde.fuxico.addEventListener('click', () => {
+    if (esconde.travado) return; somTonhonhoin(); esconde.fuxico.classList.remove('pegadinha'); void esconde.fuxico.offsetWidth; esconde.fuxico.classList.add('pegadinha');
+    esconde.retorno.textContent = 'Tonhonhoin! Esse é o Fuxico. Continue procurando o Bolota!'; esconde.retorno.className = 'retorno retorno--quase';
+  });
+  esconde.novo.addEventListener('click', novaCenaEsconde); novaCenaEsconde();
 }

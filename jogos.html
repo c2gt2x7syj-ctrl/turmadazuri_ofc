@@ -51,7 +51,7 @@
         <a class="botao botao--claro" href="#casas">Cada bicho na sua casa</a>
         <a class="botao botao--claro" href="#sequencia">Repita a sequência</a>
         <a class="botao botao--claro" href="#quebra">Quebra-cabeça</a>
-        <a class="botao botao--claro" href="#corrida">Corrida do Bolota</a>
+        <a class="botao botao--claro" href="#onde-bolota">Onde está o Bolota?</a>
       </nav>
     </div>
   </section>
@@ -260,19 +260,24 @@
     </div>
   </section>
 
-  <!-- 10. Corrida do Bolota -->
-  <section class="secao jogo" id="corrida">
+  <!-- 10. Onde está o Bolota? -->
+  <section class="secao jogo" id="onde-bolota">
     <div class="container">
       <div class="cabeca-jogo">
-        <h2 class="titulo-secao contorno c-laranja">Corrida do Bolota</h2>
-        <p class="placar" aria-live="polite">Estrelas: <b id="corrida-estrelas">0</b> · Melhor corrida: <b id="corrida-melhor">0</b></p>
+        <h2 class="titulo-secao contorno c-laranja">Onde está o Bolota?</h2>
+        <p class="placar" aria-live="polite">Achados: <b id="esconde-pontos">0</b> · Cena: <b id="esconde-cena">1</b>/3</p>
       </div>
-      <div class="painel painel--corrida">
-        <canvas id="corrida-canvas" width="760" height="428" tabindex="0" role="application" aria-label="Corrida do Bolota. Toque, clique ou aperte espaço para pular."></canvas>
-        <p class="retorno" id="corrida-retorno" aria-live="assertive">Toque em Começar para rolar!</p>
-        <div class="acoes-jogo"><button class="botao" type="button" id="corrida-comecar">Começar</button></div>
+      <div class="painel painel--esconde">
+        <p class="pergunta pergunta--menor">Procure com atenção e toque no Bolota. Cuidado com o Fuxico!</p>
+        <div class="esconde-cena" id="esconde-cena-jogo" aria-label="Cena para procurar o Bolota">
+          <img class="esconde-fundo" id="esconde-fundo" src="img/jogos/onde-bolota/quintal.jpg" alt="Quintal colorido da Turma da Zuri">
+          <button class="esconde-personagem esconde-bolota" id="esconde-bolota" type="button" aria-label="Bolota"><img src="img/jogos/onde-bolota/bolota.png" alt=""></button>
+          <button class="esconde-personagem esconde-fuxico" id="esconde-fuxico" type="button" aria-label="Fuxico"><img src="img/jogos/onde-bolota/fuxico.png" alt=""></button>
+        </div>
+        <p class="retorno" id="esconde-retorno" aria-live="assertive">Onde será que o Bolota se escondeu?</p>
+        <div class="acoes-jogo"><button class="botao botao--claro" type="button" id="esconde-novo">Mudar os esconderijos</button></div>
       </div>
-      <p class="dica">Para os pais: toque na tela para pular as pedras e pegar estrelas. Sem pressa: a velocidade aumenta bem devagar.</p>
+      <p class="dica">Para os pais: ajude a criança a observar cores, formas e detalhes. Se encontrar o Fuxico, ele responde com um “tonhonhoin” divertido.</p>
     </div>
   </section>
 </main>
