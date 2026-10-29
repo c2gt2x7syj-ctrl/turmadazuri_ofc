@@ -3,7 +3,18 @@
 .hero-jogos { background: var(--turquesa); border-bottom: var(--borda); padding: 64px 0; }
 .hero-jogos h1 { font-size: clamp(3rem, 8vw, 6rem); --traco: 8px; --degrau: 7px; --cor-borda: var(--turquesa-escuro); }
 .hero-jogos .intro { color: #fff; font-weight: 600; }
-.atalhos { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.atalhos { counter-reset: jogos; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+.atalhos .botao {
+  counter-increment: jogos; min-width: 0; min-height: 74px; justify-content: flex-start; gap: 9px;
+  padding: 12px 14px; border-radius: 18px; line-height: 1.12; text-align: left;
+}
+.atalhos .botao::before {
+  content: counter(jogos); flex: 0 0 29px; width: 29px; height: 29px; display: grid; place-items: center;
+  border: 2px solid var(--tinta); border-radius: 50%; background: var(--sol); font-size: .82rem;
+}
+.atalhos .botao:nth-child(4n + 2)::before { background: #9FE0E3; }
+.atalhos .botao:nth-child(4n + 3)::before { background: #F6B9BE; }
+.atalhos .botao:nth-child(4n + 4)::before { background: #BFD1E5; }
 
 .jogo { scroll-margin-top: 80px; }
 .cabeca-jogo { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
@@ -87,6 +98,9 @@ button:disabled { cursor: default; opacity: .55; }
 
 @media (max-width: 760px) {
   .hero-jogos { padding: 44px 0; }
+  .atalhos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .atalhos .botao { width: 100%; min-height: 76px; padding: 11px 10px; font-size: .9rem; box-shadow: 0 4px 0 var(--tinta); }
+  .atalhos .botao::before { flex-basis: 27px; width: 27px; height: 27px; }
   .grade-memoria { grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .opcoes-imagem { grid-template-columns: repeat(2, 1fr); }
   .opcao { min-width: 88px; }
