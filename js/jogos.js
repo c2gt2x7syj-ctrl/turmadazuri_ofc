@@ -837,18 +837,19 @@ if (quebra.tab) {
 
 /* ---------------- 10. Onde está o Bolota? ---------------- */
 const esconde = {
-  fundo: document.getElementById('esconde-fundo'), bolota: document.getElementById('esconde-bolota'),
+  fundo: document.getElementById('esconde-fundo'), frente: document.getElementById('esconde-frente'), bolota: document.getElementById('esconde-bolota'),
   fuxico: document.getElementById('esconde-fuxico'), retorno: document.getElementById('esconde-retorno'),
   pontosEl: document.getElementById('esconde-pontos'), cenaEl: document.getElementById('esconde-cena'),
   novo: document.getElementById('esconde-novo'), pontos: 0, cena: -1, travado: false,
 };
 const CENAS_ESCONDE = [
-  { src: 'img/jogos/onde-bolota/quintal.jpg', alt: 'Quintal colorido da Turma da Zuri', posicoes: [[8, 48], [35, 58], [58, 43], [78, 52], [19, 20], [67, 18]] },
-  { src: 'img/jogos/onde-bolota/floresta.jpg', alt: 'Clareira verde da Mata Atlântica', posicoes: [[10, 48], [35, 54], [58, 52], [78, 38], [23, 28], [65, 19]] },
-  { src: 'img/jogos/onde-bolota/praia.jpg', alt: 'Praia e manguezal ensolarados', posicoes: [[8, 48], [32, 57], [55, 53], [78, 42], [18, 22], [68, 17]] },
+  { src: 'img/jogos/onde-bolota/quintal.jpg', frente: 'img/jogos/onde-bolota/quintal-frente.png', alt: 'Quintal colorido da Turma da Zuri', posicoes: [[0, 48, .72], [10, 58, .68], [22, 61, .7], [70, 58, .66], [84, 48, .7], [3, 25, .64], [80, 25, .66]] },
+  { src: 'img/jogos/onde-bolota/floresta.jpg', frente: 'img/jogos/onde-bolota/floresta-frente.png', alt: 'Clareira verde da Mata Atlântica', posicoes: [[0, 48, .66], [11, 58, .7], [24, 63, .64], [70, 61, .68], [84, 46, .66], [2, 27, .62], [80, 27, .64]] },
+  { src: 'img/jogos/onde-bolota/praia.jpg', frente: 'img/jogos/onde-bolota/praia-frente.png', alt: 'Praia e manguezal ensolarados', posicoes: [[0, 48, .68], [11, 59, .64], [25, 63, .68], [69, 61, .64], [84, 46, .68], [2, 26, .62], [80, 25, .64]] },
 ];
-function posicionarEscondido(el, pos, giro) {
-  el.style.left = `${pos[0]}%`; el.style.top = `${pos[1]}%`; el.style.transform = `rotate(${giro}deg)`;
+function posicionarEscondido(el, pos, giro, dificuldade) {
+  el.style.left = `${pos[0]}%`; el.style.top = `${pos[1]}%`; el.style.setProperty('--giro', `${giro}deg`);
+  el.style.setProperty('--escala', Math.max(.58, pos[2] * dificuldade).toFixed(2));
 }
 function somTonhonhoin() {
   if (!efeitos.somLigado()) return;
@@ -861,8 +862,9 @@ function somTonhonhoin() {
 }
 function novaCenaEsconde() {
   const e = esconde; e.travado = false; e.cena = (e.cena + 1) % CENAS_ESCONDE.length;
-  const cena = CENAS_ESCONDE[e.cena]; e.fundo.src = cena.src; e.fundo.alt = cena.alt; e.cenaEl.textContent = e.cena + 1;
-  const lugares = embaralhar([...cena.posicoes]); posicionarEscondido(e.bolota, lugares[0], sorteio(-12, 12)); posicionarEscondido(e.fuxico, lugares[1], sorteio(-12, 12));
+  const cena = CENAS_ESCONDE[e.cena]; e.fundo.src = cena.src; e.fundo.alt = cena.alt; e.frente.src = cena.frente; e.cenaEl.textContent = e.cena + 1;
+  const lugares = embaralhar([...cena.posicoes]); const dificuldade = Math.max(.78, 1 - e.pontos * .025);
+  posicionarEscondido(e.bolota, lugares[0], sorteio(-12, 12), dificuldade); posicionarEscondido(e.fuxico, lugares[1], sorteio(-12, 12), dificuldade);
   e.bolota.classList.remove('achou'); e.fuxico.classList.remove('pegadinha'); e.bolota.disabled = false; e.fuxico.disabled = false;
   e.retorno.textContent = 'Onde será que o Bolota se escondeu?'; e.retorno.className = 'retorno';
 }

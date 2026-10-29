@@ -254,13 +254,15 @@ button:disabled { cursor: default; opacity: .55; }
   border: var(--borda); border-radius: var(--raio); box-shadow: 0 6px 0 var(--tinta); background: #BFE8F5;
 }
 .esconde-fundo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.esconde-frente { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .esconde-personagem {
-  position: absolute; z-index: 2; width: clamp(70px, 13vw, 132px); min-height: 70px; aspect-ratio: 1; padding: 0;
+  position: absolute; z-index: 2; width: clamp(64px, 9vw, 104px); min-height: 64px; aspect-ratio: 1; padding: 0;
   border: 0; background: transparent; cursor: pointer; filter: drop-shadow(0 4px 3px rgb(42 26 18 / .4));
+  transform: rotate(var(--giro, 0deg)) scale(var(--escala, 1)); transform-origin: center bottom;
   transition: transform .18s ease, filter .18s ease; touch-action: manipulation;
 }
 .esconde-personagem img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-.esconde-personagem:hover, .esconde-personagem:focus-visible { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--sol)); }
+.esconde-personagem:hover, .esconde-personagem:focus-visible { transform: rotate(var(--giro, 0deg)) scale(calc(var(--escala, 1) * 1.08)); filter: drop-shadow(0 0 8px var(--sol)); }
 .esconde-personagem.achou { animation: vitoria .6s ease; }
 .esconde-fuxico.pegadinha { animation: tonhonhoin .55s ease; }
 @keyframes tonhonhoin { 25% { transform: rotate(-12deg) scale(.9); } 55% { transform: rotate(12deg) scale(1.15); } }
@@ -273,7 +275,7 @@ button:disabled { cursor: default; opacity: .55; }
   .seq-grade { gap: 12px; }
   .seq-botao { min-height: 112px; border-width: 6px; }
   .esconde-cena { aspect-ratio: 4 / 3; }
-  .esconde-personagem { width: clamp(64px, 22vw, 96px); }
+  .esconde-personagem { width: clamp(58px, 18vw, 78px); min-height: 58px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
