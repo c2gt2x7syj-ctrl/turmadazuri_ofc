@@ -1,30 +1,14 @@
 [hidden] { display: none !important; }
 /* Página de jogos */
-.hero-jogos {
-  position: relative; isolation: isolate; overflow: hidden;
-  background:
-    radial-gradient(circle at 90% 18%, rgb(255 208 68 / .72) 0 8%, transparent 8.2%),
-    radial-gradient(circle at 6% 90%, rgb(245 138 36 / .52) 0 12%, transparent 12.2%),
-    linear-gradient(135deg, var(--turquesa-claro), var(--turquesa) 48%, #118A93);
-  border-bottom: var(--borda); padding: 64px 0;
-}
-.hero-jogos::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; opacity: .2; pointer-events: none;
-  background-image: radial-gradient(circle, #fff 0 3px, transparent 3.5px); background-size: 38px 38px;
-}
+.hero-jogos { background: var(--turquesa); border-bottom: var(--borda); padding: 64px 0; }
 .hero-jogos h1 { font-size: clamp(3rem, 8vw, 6rem); --traco: 8px; --degrau: 7px; --cor-borda: var(--turquesa-escuro); }
 .hero-jogos .intro { color: #fff; font-weight: 600; }
 .atalhos { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 
 .jogo { scroll-margin-top: 80px; }
 .cabeca-jogo { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
-.placar { margin: 0; font-weight: 900; font-size: 1.1rem; background: linear-gradient(135deg, #fff, var(--creme-quente)); border: var(--borda); border-radius: 999px; padding: 8px 18px; box-shadow: 0 4px 0 var(--tinta); }
-.painel { background: rgb(255 255 255 / .92); border: var(--borda); border-radius: var(--raio); box-shadow: 0 8px 0 var(--tinta); padding: clamp(18px, 4vw, 36px); }
-.jogo:nth-of-type(5n + 1) .painel { box-shadow: 0 8px 0 var(--laranja-escuro); }
-.jogo:nth-of-type(5n + 2) .painel { box-shadow: 0 8px 0 var(--turquesa-escuro); }
-.jogo:nth-of-type(5n + 3) .painel { box-shadow: 0 8px 0 var(--sol-escuro); }
-.jogo:nth-of-type(5n + 4) .painel { box-shadow: 0 8px 0 var(--vermelho-escuro); }
-.jogo:nth-of-type(5n + 5) .painel { box-shadow: 0 8px 0 var(--azul-escuro); }
+.placar { margin: 0; font-weight: 900; font-size: 1.1rem; background: #fff; border: var(--borda); border-radius: 999px; padding: 8px 18px; box-shadow: 0 4px 0 var(--tinta); }
+.painel { background: #fff; border: var(--borda); border-radius: var(--raio); box-shadow: 0 8px 0 var(--tinta); padding: clamp(18px, 4vw, 36px); }
 .pergunta { font-weight: 900; font-size: clamp(1.4rem, 3.5vw, 2rem); margin: 0 0 18px; text-align: center; }
 .pergunta--menor { font-size: 1.3rem; margin-top: 24px; }
 .dica { margin-top: 22px; color: var(--tinta-suave); font-size: .95rem; max-width: 70ch; }
